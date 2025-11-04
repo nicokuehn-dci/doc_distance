@@ -7,3 +7,5 @@ env/
 __pycache__/
 
 CHECKLIST.md
+gunicorn.log
+*.log
