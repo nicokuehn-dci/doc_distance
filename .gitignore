@@ -1,0 +1,7 @@
+venv/
+.env
+.venv
+env/
+*.sqlite3
+.python-version
+__pycache__/
