@@ -5,3 +5,5 @@ env/
 *.sqlite3
 .python-version
 __pycache__/
+
+CHECKLIST.md

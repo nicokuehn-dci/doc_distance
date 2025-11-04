@@ -1,0 +1,16 @@
+/home/nico-kuehn-dci/Desktop/doc_distance_api./doc_distance_api/.venv/lib/python3.13/site-packages/gunicorn/util.py:25: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+[2025-11-04 13:29:09 +0100] [33429] [INFO] Starting gunicorn 20.1.0
+[2025-11-04 13:29:09 +0100] [33429] [INFO] Listening at: http://127.0.0.1:8001 (33429)
+[2025-11-04 13:29:09 +0100] [33429] [INFO] Using worker: sync
+[2025-11-04 13:29:09 +0100] [33430] [INFO] Booting worker with pid: 33430
+[2025-11-04 13:29:09 +0100] [33431] [INFO] Booting worker with pid: 33431
+[2025-11-04 12:30:54 +0000] [33431] [INFO] Worker exiting (pid: 33431)
+[2025-11-04 12:30:54 +0000] [33430] [INFO] Worker exiting (pid: 33430)
+[2025-11-04 13:30:54 +0100] [33429] [INFO] Handling signal: term
+[2025-11-04 13:30:54 +0100] [33429] [INFO] Shutting down: Master
+.0
+[2025-11-04 13:30:54 +0100] [33672] [INFO] Listening at: http://127.0.0.1:8001 (33672)
+[2025-11-04 13:30:54 +0100] [33672] [INFO] Using worker: sync
+[2025-11-04 13:30:54 +0100] [33674] [INFO] Booting worker with pid: 33674
+[2025-11-04 13:30:54 +0100] [33675] [INFO] Booting worker with pid: 33675
