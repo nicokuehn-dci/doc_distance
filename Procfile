@@ -1,1 +1,1 @@
-web: gunicorn project.wsgi --log-file -
+web: ./scripts/start_gunicorn.sh

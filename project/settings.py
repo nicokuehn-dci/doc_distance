@@ -92,16 +92,30 @@ if TESTING:
         }
     }
 else:
-    DATABASE_URL = os.getenv("DATABASE_URL")
-    if DATABASE_URL:
-        DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
-    else:
+    # Allow developers to force using local sqlite even if a
+    # DATABASE_URL is present (useful when a production DATABASE_URL is
+    # exported in the shell but isn't reachable locally). Set
+    # FORCE_SQLITE=1 in your local environment or .env to enable this.
+    FORCE_SQLITE = os.getenv("FORCE_SQLITE", "False").lower() in ("1", "true", "yes")
+
+    if FORCE_SQLITE:
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.sqlite3",
                 "NAME": BASE_DIR / "db.sqlite3",
             }
         }
+    else:
+        DATABASE_URL = os.getenv("DATABASE_URL")
+        if DATABASE_URL:
+            DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
+        else:
+            DATABASES = {
+                "default": {
+                    "ENGINE": "django.db.backends.sqlite3",
+                    "NAME": BASE_DIR / "db.sqlite3",
+                }
+            }
 
 
 # Password validation
