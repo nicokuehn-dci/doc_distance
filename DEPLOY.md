@@ -84,6 +84,32 @@ Storage / third-party keys (if used):
 
 After setting the environment variables, trigger a new deploy (either push a commit or use Render's "Deploy Latest Commit").
 
+## Quick deploy checklist (copy into Render Environment)
+
+When creating the service in Render, copy the following variables into the Environment section. Replace placeholder values with your real secrets.
+
+Environment variables (recommended):
+
+- SECRET_KEY: a long random string (generate with Django's get_random_secret_key())
+- DEBUG: False
+- ALLOWED_HOSTS: your-service.onrender.com (comma-separated list if needed)
+- DATABASE_URL: postgres://USER:PASSWORD@HOST:PORT/DB_NAME  (only if using Postgres)
+- DISABLE_COLLECTSTATIC: 1  # optionally skip collectstatic on deploy
+
+Optional security overrides (only if you want to customize):
+
+- SECURE_HSTS_SECONDS: 31536000
+- SECURE_HSTS_INCLUDE_SUBDOMAINS: True
+- SECURE_HSTS_PRELOAD: True
+- SECURE_SSL_REDIRECT: True
+- SESSION_COOKIE_SECURE: True
+- CSRF_COOKIE_SECURE: True
+
+After adding the variables, trigger a deploy in the Render dashboard or push a new commit to the branch connected to the service.
+
+If you want me to run a smoke test after the deploy completes, provide the Render service URL (for example: https://your-service.onrender.com) and I'll run a couple of example POSTs and report the results.
+
+
 ---
 
 If you want, I can add this `DEPLOY.md` to the repo and commit it for you, or I can also revert the punctuation-merge tokenization in `distance/algo.py` and update tests accordingly. Tell me which you'd like me to do next (commit DEPLOY.md here, revert tokenization, or both).
