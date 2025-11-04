@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-ROOT_DIR=$(dirname "$(dirname "$0")")
+ROOT_DIR=$(cd "$(dirname "$(dirname "$0")")" >/dev/null 2>&1 && pwd)
 ENV_FILE="$ROOT_DIR/.env"
 
 echo "This script will create a local .env file at: $ENV_FILE"
@@ -15,11 +15,17 @@ read -rp "SECRET_KEY (leave empty to generate a random key): " USER_SECRET
 if [ -z "$USER_SECRET" ]; then
   # Use Django's recommended get_random_secret_key if available; otherwise fallback.
   if command -v python3 >/dev/null 2>&1; then
-    USER_SECRET=$(python3 - <<'PY'
+    # Run python in a conditional so failures (e.g. django not installed) don't
+    # cause the whole script to exit because of set -e.
+    if USER_SECRET=$(python3 - <<'PY' 2>/dev/null
 from django.core.management.utils import get_random_secret_key
 print(get_random_secret_key())
 PY
-)
+); then
+      :
+    else
+      USER_SECRET=$(head -c 32 /dev/urandom | base64)
+    fi
   else
     USER_SECRET=$(head -c 32 /dev/urandom | base64)
   fi
@@ -51,15 +57,21 @@ fi
 
 echo "Wrote $ENV_FILE"
 
-# Ensure .env is ignored by git
-if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+# Ensure .env is ignored by git (operate in the project root)
+if git -C "$ROOT_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if git -C "$ROOT_DIR" ls-files --error-unmatch -- .env >/dev/null 2>&1; then
     echo ".env is already tracked by git (you should remove it manually if needed)."
   else
-    if ! grep -qxF ".env" .gitignore 2>/dev/null; then
-      echo ".env" >> .gitignore
-      git add .gitignore || true
-      git commit -m "chore: ignore local .env" || true
+    GITIGNORE="$ROOT_DIR/.gitignore"
+    # Ensure .gitignore exists
+    if [ ! -f "$GITIGNORE" ]; then
+      touch "$GITIGNORE"
+      git -C "$ROOT_DIR" add .gitignore || true
+    fi
+    if ! grep -qxF ".env" "$GITIGNORE" 2>/dev/null; then
+      echo ".env" >> "$GITIGNORE"
+      git -C "$ROOT_DIR" add .gitignore || true
+      git -C "$ROOT_DIR" commit -m "chore: ignore local .env" || true
       echo "Added .env to .gitignore"
     else
       echo ".env already present in .gitignore"

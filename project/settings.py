@@ -82,8 +82,9 @@ WSGI_APPLICATION = "project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Use sqlite during tests to avoid external DB dependency
-if "test" in sys.argv:
+# Detect test runs and use sqlite during tests to avoid external DB dependency
+TESTING = "test" in sys.argv
+if TESTING:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -143,3 +144,32 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# -----------------------------------------------------------------------------
+# Production security settings (configurable via environment)
+# When DEBUG is False we enable sensible, env-driven defaults so the
+# Django ``check --deploy`` command doesn't complain and the app is safer in
+# production. These values can be overridden by setting the corresponding
+# environment variables in Render or your hosting provider.
+# -----------------------------------------------------------------------------
+
+if not DEBUG and not TESTING:
+    # HTTP Strict Transport Security (set to 1 year by default in prod)
+    SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv("SECURE_HSTS_INCLUDE_SUBDOMAINS", "True").lower() in ("1", "true", "yes")
+    SECURE_HSTS_PRELOAD = os.getenv("SECURE_HSTS_PRELOAD", "True").lower() in ("1", "true", "yes")
+
+    # Redirect all HTTP to HTTPS
+    SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "True").lower() in ("1", "true", "yes")
+
+    # Secure cookies
+    SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "True").lower() in ("1", "true", "yes")
+    CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "True").lower() in ("1", "true", "yes")
+else:
+    # In development/tests keep these off for convenience
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
