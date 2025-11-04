@@ -66,6 +66,24 @@ Notes and security
 - Do not set `ALLOWED_HOSTS=['*']` or leave `DEBUG=True` in production for security reasons.
 - Use environment variables for secrets and never commit them to the repo.
 
+## Exact environment variables to set on Render
+Set the following environment variables in the Render service dashboard (Service → Environment). Replace example values with real secrets.
+
+- SECRET_KEY (string) — Django secret key. Example: `pM8...` (generate with Django's get_random_secret_key())
+- DEBUG (boolean) — `True` or `False` (use `False` in production)
+- ALLOWED_HOSTS (comma-separated) — e.g. `my-app.onrender.com,localhost`
+- DATABASE_URL (optional) — Postgres connection string: `postgres://USER:PASSWORD@HOST:PORT/DB_NAME`
+- DISABLE_COLLECTSTATIC (optional) — set to `1` to skip `collectstatic` during deploy
+
+Email / optional settings (only if you use them):
+- EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_USE_TLS, DEFAULT_FROM_EMAIL
+
+Storage / third-party keys (if used):
+- AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME, AWS_S3_REGION_NAME
+- THIRD_PARTY_API_KEY (example)
+
+After setting the environment variables, trigger a new deploy (either push a commit or use Render's "Deploy Latest Commit").
+
 ---
 
 If you want, I can add this `DEPLOY.md` to the repo and commit it for you, or I can also revert the punctuation-merge tokenization in `distance/algo.py` and update tests accordingly. Tell me which you'd like me to do next (commit DEPLOY.md here, revert tokenization, or both).
